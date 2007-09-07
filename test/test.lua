@@ -18,11 +18,11 @@ while true do
     local c = curses.getch()
     if c == "left" and x > 0 then
         x = x - 1
-    elseif c == "right" and x < maxx then
+    elseif c == "right" and x < maxx - 1 then
         x = x + 1
     elseif c == "up" and y > 0 then
         y = y - 1
-    elseif c == "down" and y < maxy then
+    elseif c == "down" and y < maxy - 1 then
         y = y + 1
     elseif #c == 1 then
         curses.addstr(c)
