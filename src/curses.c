@@ -113,6 +113,12 @@ static int get_mode(lua_State* L, const char* str)
     return A_NORMAL;
 }
 
+static chtype get_char(const char* str)
+{
+    /* add the ACS_ defines here */
+    return str[0];
+}
+
 static int get_char_attr(lua_State* L, int stack_pos)
 {
     int mode = A_NORMAL;
@@ -343,6 +349,32 @@ static int l_move(lua_State* L)
     return 1;
 }
 
+static int l_addch(lua_State* L)
+{
+    int is_mv;
+    pos p;
+    size_t l;
+    attr_t mode = 0;
+    short color = 0;
+    chtype ch;
+
+    is_mv = get_pos(L, &p);
+    ch = get_char(luaL_checklstring(L, 1, &l));
+    if (lua_istable(L, 2)) {
+        mode = get_char_attr(L, 2);
+        color = get_char_color(L, 2);
+    }
+
+    if (is_mv) {
+        lua_pushboolean(L, mvaddch(p.y, p.x, ch | mode | color) == OK);
+    }
+    else {
+        lua_pushboolean(L, addch(ch | mode | color) == OK);
+    }
+
+    return 1;
+}
+
 static int l_addstr(lua_State* L)
 {
     int is_mv, set_attrs = 0;
@@ -361,20 +393,10 @@ static int l_addstr(lua_State* L)
     }
 
     if (is_mv) {
-        if (l == 1) {
-            lua_pushboolean(L, mvaddch(p.y, p.x, *str) == OK);
-        }
-        else {
-            lua_pushboolean(L, mvaddstr(p.y, p.x, str) == OK);
-        }
+        lua_pushboolean(L, mvaddstr(p.y, p.x, str) == OK);
     }
     else {
-        if (l == 1) {
-            lua_pushboolean(L, addch(*str) == OK);
-        }
-        else {
-            lua_pushboolean(L, addstr(str) == OK);
-        }
+        lua_pushboolean(L, addstr(str) == OK);
     }
 
     if (set_attrs) {
@@ -432,6 +454,7 @@ const luaL_Reg reg[] = {
     { "init_pair", l_init_pair },
     { "getch", l_getch },
     { "move", l_move },
+    { "addch", l_addch },
     { "addstr", l_addstr },
     { "refresh", l_refresh },
     { "getmaxyx", l_getmaxyx },
