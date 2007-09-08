@@ -277,10 +277,10 @@ static int l_addstr(lua_State* L)
         p = get_pos(L);
         str = luaL_checklstring(L, 2, &l);
         if (l == 1) {
-            mvaddch(p.y, p.x, *str);
+            lua_pushboolean(L, mvaddch(p.y, p.x, *str) == OK);
         }
         else {
-            mvaddstr(p.y, p.x, str);
+            lua_pushboolean(L, mvaddstr(p.y, p.x, str) == OK);
         }
     }
     else {
@@ -289,10 +289,10 @@ static int l_addstr(lua_State* L)
 
         str = luaL_checklstring(L, 1, &l);
         if (l == 1) {
-            addch(*str);
+            lua_pushboolean(L, addch(*str) == OK);
         }
         else {
-            addstr(str);
+            lua_pushboolean(L, addstr(str) == OK);
         }
     }
 
