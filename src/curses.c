@@ -43,25 +43,29 @@ static void init_colors(lua_State* L)
     ncolors = 8;
 }
 
-static pos get_pos(lua_State* L)
+static int get_pos(lua_State* L, pos* p)
 {
-    pos ret;
+    if (!lua_istable(L, 1)) {
+        return 0;
+    }
 
-    getyx(stdscr, ret.y, ret.x);
+    getyx(stdscr, p->y, p->x);
 
     lua_getfield(L, 1, "x");
     if (lua_isnumber(L, -1)) {
-        ret.x = lua_tonumber(L, -1);
+        p->x = lua_tonumber(L, -1);
     }
     lua_pop(L, 1);
 
     lua_getfield(L, 1, "y");
     if (lua_isnumber(L, -1)) {
-        ret.y = lua_tonumber(L, -1);
+        p->y = lua_tonumber(L, -1);
     }
     lua_pop(L, 1);
 
-    return ret;
+    lua_remove(L, 1);
+
+    return 1;
 }
 
 static int l_initscr(lua_State* L)
@@ -185,11 +189,9 @@ static int l_init_pair(lua_State* L)
 static int l_getch(lua_State* L)
 {
     int c;
+    pos p;
     
-    if (lua_istable(L, 1)) {
-        pos p;
-
-        p = get_pos(L);
+    if (get_pos(L, &p)) {
         c = mvgetch(p.y, p.x);
     }
     else {
@@ -249,10 +251,9 @@ static int l_getch(lua_State* L)
 
 static int l_move(lua_State* L)
 {
-    if (lua_istable(L, 1)) {
-        pos p;
+    pos p;
 
-        p = get_pos(L);
+    if (get_pos(L, &p)) {
         lua_pushboolean(L, (move(p.y, p.x) == OK));
     }
     else {
@@ -269,13 +270,15 @@ static int l_move(lua_State* L)
 
 static int l_addstr(lua_State* L)
 {
-    if (lua_istable(L, 1)) {
-        pos p;
-        size_t l;
-        const char* str;
+    int is_mv = 0;
+    pos p;
+    size_t l;
+    const char* str;
 
-        p = get_pos(L);
-        str = luaL_checklstring(L, 2, &l);
+    is_mv = get_pos(L, &p);
+    str = luaL_checklstring(L, 1, &l);
+
+    if (is_mv) {
         if (l == 1) {
             lua_pushboolean(L, mvaddch(p.y, p.x, *str) == OK);
         }
@@ -284,10 +287,6 @@ static int l_addstr(lua_State* L)
         }
     }
     else {
-        size_t l;
-        const char* str;
-
-        str = luaL_checklstring(L, 1, &l);
         if (l == 1) {
             lua_pushboolean(L, addch(*str) == OK);
         }
