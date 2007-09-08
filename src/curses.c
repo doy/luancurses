@@ -49,13 +49,13 @@ static pos get_pos(lua_State* L)
 
     getyx(stdscr, ret.y, ret.x);
 
-    lua_getfield(L, -1, "x");
+    lua_getfield(L, 1, "x");
     if (lua_isnumber(L, -1)) {
         ret.x = lua_tonumber(L, -1);
     }
     lua_pop(L, 1);
 
-    lua_getfield(L, -1, "y");
+    lua_getfield(L, 1, "y");
     if (lua_isnumber(L, -1)) {
         ret.y = lua_tonumber(L, -1);
     }
