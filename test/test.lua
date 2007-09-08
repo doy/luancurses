@@ -3,14 +3,10 @@ require "curses"
 curses.initscr();
 curses.start_color();
 curses.setup_term{nl = false, cbreak = true, echo = false, keypad = true}
-curses.init_pair("black", "black")
-curses.init_pair("green", "green")
-curses.init_pair("red", "red")
-curses.init_pair("cyan", "cyan")
-curses.init_pair("white", "white")
-curses.init_pair("magenta", "magenta")
-curses.init_pair("blue", "blue")
-curses.init_pair("yellow", "yellow")
+local colors = {"black", "green", "red", "cyan", "white", "magenta", "blue", "yellow"}
+for _, color in ipairs(colors) do
+    curses.init_pair(color, color)
+end
 
 local x, y = 0, 0
 local maxy, maxx = curses.getmaxyx()
@@ -25,7 +21,7 @@ while true do
     elseif c == "down" and y < maxy - 1 then
         y = y + 1
     elseif #c == 1 then
-        curses.addstr(c)
+        curses.addch(c, {color = colors[math.random(#colors)]})
     end
     curses.move(y, x)
 end
