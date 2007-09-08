@@ -295,7 +295,7 @@ static int l_getch(lua_State* L)
 {
     int c, i, found = 0;
     pos p;
-    
+
     if (get_pos(L, &p)) {
         c = mvgetch(p.y, p.x);
     }
