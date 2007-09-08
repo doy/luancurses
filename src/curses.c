@@ -12,6 +12,35 @@ typedef struct _pos {
     int y;
 } pos;
 
+typedef struct _trans {
+    const char* str;
+    int tag;
+} trans;
+
+static trans colors[] = {
+    {"black",   COLOR_BLACK},
+    {"red",     COLOR_RED},
+    {"green",   COLOR_GREEN},
+    {"yellow",  COLOR_YELLOW},
+    {"blue",    COLOR_BLUE},
+    {"magenta", COLOR_MAGENTA},
+    {"cyan",    COLOR_CYAN},
+    {"white",   COLOR_WHITE},
+};
+
+static trans keys[] = {
+    {"left",      KEY_LEFT},
+    {"right",     KEY_RIGHT},
+    {"up",        KEY_UP},
+    {"down",      KEY_DOWN},
+    {"home",      KEY_HOME},
+    {"end",       KEY_END},
+    {"backspace", KEY_BACKSPACE},
+    {"enter",     KEY_ENTER},
+    {"page down", KEY_NPAGE},
+    {"page up",   KEY_PPAGE},
+};
+
 static int ncolors = 1, ncolor_pairs = 1;
 
 /* necessary because atexit() expects a function that returns void, and gcc
@@ -23,22 +52,12 @@ static void _endwin(void)
 
 static void init_colors(lua_State* L)
 {
-    lua_pushinteger(L, COLOR_BLACK);
-    lua_setfield(L, -2, "black");
-    lua_pushinteger(L, COLOR_RED);
-    lua_setfield(L, -2, "red");
-    lua_pushinteger(L, COLOR_GREEN);
-    lua_setfield(L, -2, "green");
-    lua_pushinteger(L, COLOR_YELLOW);
-    lua_setfield(L, -2, "yellow");
-    lua_pushinteger(L, COLOR_BLUE);
-    lua_setfield(L, -2, "blue");
-    lua_pushinteger(L, COLOR_MAGENTA);
-    lua_setfield(L, -2, "magenta");
-    lua_pushinteger(L, COLOR_CYAN);
-    lua_setfield(L, -2, "cyan");
-    lua_pushinteger(L, COLOR_WHITE);
-    lua_setfield(L, -2, "white");
+    int i;
+
+    for (i = 0; i < sizeof(colors) / sizeof(colors[0]); ++i) {
+        lua_pushinteger(L, colors[i].tag);
+        lua_setfield(L, -2, colors[i].str);
+    }
 
     ncolors = 8;
 }
@@ -188,7 +207,7 @@ static int l_init_pair(lua_State* L)
 
 static int l_getch(lua_State* L)
 {
-    int c;
+    int c, i, found = 0;
     pos p;
     
     if (get_pos(L, &p)) {
@@ -202,48 +221,24 @@ static int l_getch(lua_State* L)
         return 1;
     }
 
-    switch (c) {
-        case KEY_LEFT:
-            lua_pushstring(L, "left");
-        break;
-        case KEY_RIGHT:
-            lua_pushstring(L, "right");
-        break;
-        case KEY_UP:
-            lua_pushstring(L, "up");
-        break;
-        case KEY_DOWN:
-            lua_pushstring(L, "down");
-        break;
-        case KEY_HOME:
-            lua_pushstring(L, "home");
-        break;
-        case KEY_END:
-            lua_pushstring(L, "end");
-        break;
-        case KEY_BACKSPACE:
-            lua_pushstring(L, "backspace");
-        break;
-        case KEY_ENTER:
-            lua_pushstring(L, "enter");
-        break;
-        case KEY_NPAGE:
-            lua_pushstring(L, "page down");
-        break;
-        case KEY_PPAGE:
-            lua_pushstring(L, "page up");
-        break;
-        default:
-            if (c >= KEY_F(1) && c <= KEY_F(64)) {
-                lua_pushfstring(L, "F%d", c - KEY_F0);
-            }
-            else {
-                char s[1];
+    for (i = 0; i < sizeof(keys) / sizeof(keys[0]); ++i) {
+        if (c == keys[i].tag) {
+            lua_pushstring(L, keys[i].str);
+            found = 1;
+            break;
+        }
+    }
 
-                s[0] = c;
-                lua_pushlstring(L, s, 1);
-            }
-        break;
+    if (!found) {
+        if (c >= KEY_F(1) && c <= KEY_F(64)) {
+            lua_pushfstring(L, "F%d", c - KEY_F0);
+        }
+        else {
+            char s[1];
+
+            s[0] = c;
+            lua_pushlstring(L, s, 1);
+        }
     }
 
     return 1;
