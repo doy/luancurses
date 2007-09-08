@@ -28,6 +28,19 @@ static trans colors[] = {
     {"white",   COLOR_WHITE},
 };
 
+static trans modes[] = {
+    {"standout",   A_STANDOUT},
+    {"underline",  A_UNDERLINE},
+    {"reverse",    A_REVERSE},
+    {"blink",      A_BLINK},
+    {"dim",        A_DIM},
+    {"bold",       A_BOLD},
+    {"protect",    A_PROTECT},
+    {"invis",      A_INVIS},
+    {"altcharset", A_ALTCHARSET},
+    {"chartext",   A_CHARTEXT},
+};
+
 static trans keys[] = {
     {"left",      KEY_LEFT},
     {"right",     KEY_RIGHT},
@@ -85,6 +98,73 @@ static int get_pos(lua_State* L, pos* p)
     lua_remove(L, 1);
 
     return 1;
+}
+
+static int get_mode(lua_State* L, const char* str)
+{
+    int i;
+
+    for (i = 0; i < sizeof(modes) / sizeof(modes[0]); ++i) {
+        if (!strcmp(str, modes[i].str)) {
+            return modes[i].tag;
+        }
+    }
+
+    return A_NORMAL;
+}
+
+static int get_char_attr(lua_State* L, int stack_pos)
+{
+    int mode = A_NORMAL;
+
+    lua_pushnil(L);
+    while (lua_next(L, stack_pos) != 0) {
+        if (lua_isstring(L, -2)) {
+            const char* str;
+
+            str = lua_tostring(L, -2);
+            lua_toboolean(L, -1) ?
+                (mode |= get_mode(L, str)) : (mode &= ~get_mode(L, str));
+        }
+        lua_pop(L, 1);
+    }
+
+    return mode;
+}
+
+static int get_char_color(lua_State* L, int stack_pos)
+{
+    const char* str;
+    int val = -1;
+
+    lua_getfield(L, stack_pos, "color");
+    if (!lua_isstring(L, -1)) {
+        return 0;
+    }
+    str = lua_tostring(L, -1);
+    lua_pop(L, 1);
+
+    lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
+    lua_getfield(L, -1, "color_pairs");
+    lua_pushnil(L);
+    while (lua_next(L, -2) != 0) {
+        if (lua_isstring(L, -2)) {
+            const char* key;
+
+            key = lua_tostring(L, -2);
+            if (!strcmp(key, str)) {
+                val = lua_tointeger(L, -1);
+            }
+        }
+        lua_pop(L, 1);
+    }
+    lua_pop(L, 2);
+
+    if (val == -1) {
+        return luaL_error(L, "Unknown color_pair %s", str);
+    }
+
+    return COLOR_PAIR(val);
 }
 
 static int l_initscr(lua_State* L)
@@ -265,13 +345,20 @@ static int l_move(lua_State* L)
 
 static int l_addstr(lua_State* L)
 {
-    int is_mv = 0;
+    int is_mv, set_attrs = 0;
     pos p;
     size_t l;
     const char* str;
+    attr_t old_mode = 0;
+    short old_color = 0;
 
     is_mv = get_pos(L, &p);
     str = luaL_checklstring(L, 1, &l);
+    if (lua_istable(L, 2)) {
+        set_attrs = 1;
+        attr_get(&old_mode, &old_color, NULL);
+        attr_set(get_char_attr(L, 2), get_char_color(L, 2), NULL);
+    }
 
     if (is_mv) {
         if (l == 1) {
@@ -288,6 +375,10 @@ static int l_addstr(lua_State* L)
         else {
             lua_pushboolean(L, addstr(str) == OK);
         }
+    }
+
+    if (set_attrs) {
+        attr_set(old_mode, old_color, NULL);
     }
 
     return 1;
