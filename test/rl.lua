@@ -20,16 +20,6 @@ local function botl(str)
     curses.addstr({y = rows - 1, x = 0}, str)
     curses.clrtoeol()
 end
-
-local function move_char(char, direction)
-    if direction.x == 0 and direction.y == 0 then return 1 end
-    local x, y = char.x, char.y
-    char.x = char.x + direction.x
-    char.y = char.y + direction.y
-    if x ~= char.x or y ~= char.y then return 1
-    else return 0
-    end
-end
 -- }}}
 
 -- curses initialization {{{
