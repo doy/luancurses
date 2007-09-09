@@ -1,0 +1,3 @@
+not supporting printing
+not supporting formatted reads and writes (use string.format/string.match)
+not supporting termcap or terminfo stuff
