@@ -406,6 +406,30 @@ static int l_addstr(lua_State* L)
     return 1;
 }
 
+static int l_erase(lua_State* L)
+{
+    lua_pushboolean(L, (erase() == OK));
+    return 1;
+}
+
+static int l_clear(lua_State* L)
+{
+    lua_pushboolean(L, (clear() == OK));
+    return 1;
+}
+
+static int l_clrtobot(lua_State* L)
+{
+    lua_pushboolean(L, (clrtobot() == OK));
+    return 1;
+}
+
+static int l_clrtoeol(lua_State* L)
+{
+    lua_pushboolean(L, (clrtoeol() == OK));
+    return 1;
+}
+
 static int l_refresh(lua_State* L)
 {
     lua_pushboolean(L, (refresh() == OK));
@@ -456,6 +480,10 @@ const luaL_Reg reg[] = {
     { "move", l_move },
     { "addch", l_addch },
     { "addstr", l_addstr },
+    { "erase", l_erase },
+    { "clear", l_clear },
+    { "clrtobot", l_clrtobot },
+    { "clrtoeol", l_clrtoeol },
     { "refresh", l_refresh },
     { "getmaxyx", l_getmaxyx },
     { "getyx", l_getyx },
