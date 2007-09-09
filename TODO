@@ -1,0 +1,26 @@
+- deleting stuff (curs_delch, curs_deleteln)
+- adding stuff (curs_addchstr, curs_addch (echochar))
+- inserting stuff (curs_insch, curs_insstr, curs_inch, curs_inchstr)
+- reading from the screen (curs_instr)
+- reading input (ungetch (curs_getch), curs_getstr
+- isendwin (curs_initscr)
+- attribute support (curs_attr)
+- terminal attributes (curs_termattrs)
+- finish up curs_inopts and curs_outopts
+- finish up curs_color (color_content, pair_content)
+- scrolling support (curs_scroll)
+- curs_beep
+- support the rest of the refresh options (curs_refresh)
+- window background support (curs_bkgd)
+- multiple window support (all fns that start with w, curs_overlay, curs_initscr, curs_window, curs_getyx (par, beg), curs_touch, curs_overlay)
+- border support (curs_border)
+- status line stuff (curs_slk)
+- mouse support (curs_mouse)
+- pad support (curs_pad)
+- screen dump support (curs_scr_dump)
+- multiple term support
+- low level stuff (curs_kernel)
+- wide char support? (curs_addwstr, curs_bkgrnd, curs_border_set, etc)
+- trace debugging (curs_trace)
+- ncurses extensions (curs_extend, define_key, default_colors, curs_getch (has_key), key_defined, keybound, keyok, resizeterm)
+- misc curses utils (curs_util)
