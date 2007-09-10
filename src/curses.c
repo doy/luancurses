@@ -430,6 +430,42 @@ static int l_clrtoeol(lua_State* L)
     return 1;
 }
 
+static int l_delch(lua_State* L)
+{
+    pos p;
+
+    if (get_pos(L, &p)) {
+        lua_pushboolean(L, mvdelch(p.y, p.x) == OK);
+    }
+    else {
+        lua_pushboolean(L, delch() == OK);
+    }
+
+    return 1;
+}
+
+static int l_deleteln(lua_State* L)
+{
+    lua_pushboolean(L, (deleteln() == OK));
+    return 1;
+}
+
+static int l_insdelln(lua_State* L)
+{
+    int n;
+
+    n = luaL_checkinteger(L, 1);
+
+    lua_pushboolean(L, (insertln() == OK));
+    return 1;
+}
+
+static int l_insertln(lua_State* L)
+{
+    lua_pushboolean(L, (insertln() == OK));
+    return 1;
+}
+
 static int l_refresh(lua_State* L)
 {
     lua_pushboolean(L, (refresh() == OK));
@@ -484,6 +520,10 @@ const luaL_Reg reg[] = {
     { "clear", l_clear },
     { "clrtobot", l_clrtobot },
     { "clrtoeol", l_clrtoeol },
+    { "delch", l_delch },
+    { "deleteln", l_deleteln },
+    { "insdelln", l_insdelln },
+    { "insertln", l_insertln },
     { "refresh", l_refresh },
     { "getmaxyx", l_getmaxyx },
     { "getyx", l_getyx },
