@@ -1,4 +1,3 @@
-- deleting stuff (curs_delch, curs_deleteln)
 - adding stuff (curs_addchstr, curs_addch (echochar))
 - inserting stuff (curs_insch, curs_insstr, curs_inch, curs_inchstr)
 - reading from the screen (curs_instr)
