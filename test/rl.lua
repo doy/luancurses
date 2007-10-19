@@ -1,4 +1,5 @@
 require 'curses'
+require 'signal'
 
 -- globals {{{
 local map, rows, cols
@@ -20,6 +21,15 @@ local function botl(str)
     curses.addstr({y = rows - 1, x = 0}, str)
     curses.clrtoeol()
 end
+
+local function cleanup(sig)
+    curses.clear()
+    curses.endwin()
+    if sig then
+        signal.signal(sig, "default")
+        signal.raise(sig)
+    end
+end
 -- }}}
 
 -- curses initialization {{{
@@ -29,6 +39,11 @@ curses.setup_term{nl = false, cbreak = true, echo = false, keypad = true}
 for _, color in ipairs(colors) do
     curses.init_pair(color, color)
 end
+-- }}}
+
+-- cleanup on signals {{{
+signal.signal("TERM", cleanup)
+signal.signal("INT",  cleanup)
 -- }}}
 
 -- get the term size and the size of the map we want to draw {{{
@@ -107,6 +122,5 @@ end
 -- }}}
 
 -- cleanup {{{
-curses.clear()
-curses.endwin()
+cleanup()
 -- }}}
