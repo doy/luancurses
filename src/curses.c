@@ -1,7 +1,6 @@
 #include <curses.h>
 #include <lua.h>
 #include <lauxlib.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -55,13 +54,6 @@ static trans keys[] = {
 };
 
 static int ncolors = 1, ncolor_pairs = 1;
-
-/* necessary because atexit() expects a function that returns void, and gcc
- * whines otherwise */
-static void _endwin(void)
-{
-    endwin();
-}
 
 static void init_colors(lua_State* L)
 {
@@ -534,10 +526,6 @@ const luaL_Reg reg[] = {
 
 extern int luaopen_curses(lua_State* L)
 {
-    /* XXX: do we want to do this? how important is cleaning up? */
-    signal(SIGTERM, exit);
-    atexit(_endwin);
-
     lua_newtable(L);
     lua_setfield(L, LUA_REGISTRYINDEX, REG_TABLE);
 
