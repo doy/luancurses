@@ -188,6 +188,7 @@ static int l_start_color(lua_State* L)
         lua_setfield(L, -2, "colors");
         lua_setfield(L, LUA_REGISTRYINDEX, REG_TABLE);
         lua_pushboolean(L, start_color() == OK);
+        use_default_colors();
     }
     else {
         lua_pushboolean(L, FALSE);
