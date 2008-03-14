@@ -91,7 +91,7 @@ local char = {
 local directions = {
     y =     {x = -1, y = -1},
     h =     {x = -1, y = 0},  left =  {x = -1, y = 0},
-    b =     {x = -1, y = 1},          
+    b =     {x = -1, y = 1},
     k =     {x = 0,  y = -1}, up =    {x = 0, y = -1},
     ["."] = {x = 0,  y = 0},  s =     {x = 0, y = 0},
     j =     {x = 0,  y = 1},  down =  {x = 0, y = 1},
