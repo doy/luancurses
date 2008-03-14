@@ -1,3 +1,25 @@
-not supporting printing
-not supporting formatted reads and writes (use string.format/string.match)
-not supporting termcap or terminfo stuff
+LuaNcurses v0.01
+Jesse Luehrs (jluehrs2@uiuc.edu)
+
+OVERVIEW
+========
+Lua-ncurses is a wrapper around the ncurses library for terminal programming. It aims to expose the ncurses library in a way that is more natural to Lua programmers, rather than just be a thin wrapper around C function calls. It is currently rather incomplete, but most basic functionality is available.
+
+INSTALL
+=======
+This module requires Lua 5.1. To install, modify the Make.config file with paths appropriate to your system and run 'make' and 'make install'.
+
+DOCUMENTATION
+=============
+None yet, but hopefully the included tests should be explanatory enough for now. Real docs should be available in a later release.
+
+CHANGES
+=======
+0.1
+- Initial basic implementation
+
+COPYRIGHT AND LICENSE
+=====================
+Copyright (C) 2008 Jesse Luehrs
+
+This code is distributed under the MIT license; a copy is in the LICENSE file distributed with the source.

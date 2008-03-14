@@ -24,3 +24,8 @@
 - trace debugging (curs_trace)
 - ncurses extensions (curs_extend, define_key, default_colors, curs_getch (has_key), key_defined, keybound, keyok, resizeterm)
 - misc curses utils (curs_util)
+
+not supporting:
+- printing
+- formatted reads and writes (use string.format/string.match)
+- termcap or terminfo stuff
