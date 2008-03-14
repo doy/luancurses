@@ -452,6 +452,63 @@ static int l_deleteln(lua_State* L)
     return 1;
 }
 
+static int l_insch(lua_State* L)
+{
+    int is_mv;
+    pos p;
+    size_t l;
+    attr_t mode = 0;
+    short color = 0;
+    chtype ch;
+
+    is_mv = get_pos(L, &p);
+    ch = get_char(luaL_checklstring(L, 1, &l));
+    if (lua_istable(L, 2)) {
+        mode = get_char_attr(L, 2);
+        color = get_char_color(L, 2);
+    }
+
+    if (is_mv) {
+        lua_pushboolean(L, mvinsch(p.y, p.x, ch | mode | color) == OK);
+    }
+    else {
+        lua_pushboolean(L, insch(ch | mode | color) == OK);
+    }
+
+    return 1;
+}
+
+static int l_insstr(lua_State* L)
+{
+    int is_mv, set_attrs = 0;
+    pos p;
+    size_t l;
+    const char* str;
+    attr_t old_mode = 0;
+    short old_color = 0;
+
+    is_mv = get_pos(L, &p);
+    str = luaL_checklstring(L, 1, &l);
+    if (lua_istable(L, 2)) {
+        set_attrs = 1;
+        attr_get(&old_mode, &old_color, NULL);
+        attr_set(get_char_attr(L, 2), get_char_color(L, 2), NULL);
+    }
+
+    if (is_mv) {
+        lua_pushboolean(L, mvinsstr(p.y, p.x, str) == OK);
+    }
+    else {
+        lua_pushboolean(L, insstr(str) == OK);
+    }
+
+    if (set_attrs) {
+        attr_set(old_mode, old_color, NULL);
+    }
+
+    return 1;
+}
+
 static int l_insdelln(lua_State* L)
 {
     int n;
@@ -525,6 +582,8 @@ const luaL_Reg reg[] = {
     { "clrtoeol", l_clrtoeol },
     { "delch", l_delch },
     { "deleteln", l_deleteln },
+    { "insch", l_insch },
+    { "insstr", l_insstr },
     { "insdelln", l_insdelln },
     { "insertln", l_insertln },
     { "refresh", l_refresh },
