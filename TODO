@@ -1,7 +1,7 @@
-- adding stuff (curs_addchstr, curs_addch (echochar))
+- chtype arrays (curs_addchstr, curs_inchstr)
   - the point of these routines is that they are more efficient, since you pass in an array of chtypes rather than an array of chars. how can i expose this functionality?
-- inserting stuff (curs_insch, curs_insstr, curs_inch, curs_inchstr)
-- reading from the screen (curs_instr)
+- curs_addch (echochar)
+- reading from the screen (curs_instr, curs_inch)
 - reading input (ungetch (curs_getch), curs_getstr
 - isendwin (curs_initscr)
 - attribute support (curs_attr)
