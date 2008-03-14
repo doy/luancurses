@@ -1,7 +1,18 @@
 require "curses"
+require "signal"
 
-curses.initscr();
-curses.start_color();
+local function cleanup(sig)
+    curses.clear()
+    curses.endwin()
+    if sig then
+        signal.signal(sig, "default")
+        signal.raise(sig)
+    end
+end
+curses.initscr()
+signal.signal("INT", cleanup)
+signal.signal("TERM", cleanup)
+curses.start_color()
 curses.setup_term{nl = false, cbreak = true, echo = false, keypad = true}
 local colors = {"black", "green", "red", "cyan", "white", "magenta", "blue", "yellow"}
 for _, color in ipairs(colors) do
