@@ -1,6 +1,7 @@
 #include <curses.h>
 #include <lua.h>
 #include <lauxlib.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -303,7 +304,9 @@ static int l_getch(lua_State* L)
     }
     if (c == ERR) {
         lua_pushboolean(L, 0);
-        return 1;
+        lua_pushstring(L, strerror(errno));
+        fprintf(stderr, "%s\n", lua_tostring(L, -1));
+        return 2;
     }
 
     for (i = 0; i < sizeof(keys) / sizeof(keys[0]); ++i) {
