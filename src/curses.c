@@ -52,6 +52,9 @@ static trans keys[] = {
     {"enter",     KEY_ENTER},
     {"page down", KEY_NPAGE},
     {"page up",   KEY_PPAGE},
+    {"break",     KEY_BREAK},
+    {"delete",    KEY_DC},
+    {"insert",    KEY_IC},
 };
 
 static int ncolors = 1, ncolor_pairs = 1;
