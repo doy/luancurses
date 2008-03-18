@@ -19,7 +19,7 @@
 - low level stuff (curs_kernel)
 - wide char support? (curs_addwstr, curs_bkgrnd, curs_border_set, etc)
 - trace debugging (curs_trace)
-- ncurses extensions (curs_extend, define_key, default_colors, curs_getch (has_key), key_defined, keybound, keyok, resizeterm)
+- ncurses extensions (curs_extend, define_key, curs_getch (has_key), key_defined, keybound, keyok, resizeterm)
 - misc curses utils (curs_util)
 
 not supporting:
