@@ -125,6 +125,9 @@ static int get_char_attr(lua_State* L, int stack_pos)
                 int cur_mode;
 
                 cur_mode = get_mode_enum(str);
+                if (cur_mode == -1) {
+                    return luaL_error(L, "Unknown attribute %s", str);
+                }
 
                 lua_toboolean(L, -1) ? (mode |= cur_mode) : (mode &= ~cur_mode);
             }

@@ -142,11 +142,7 @@ int get_color_enum(const char* str)
 
 int get_mode_enum(const char* str)
 {
-    int ret;
-
-    ret = str2enum(modes, lengthof(modes), str);
-
-    return ret == -1 ? A_NORMAL : ret;
+    return str2enum(modes, lengthof(modes), str);
 }
 
 int get_key_enum(const char* str)
