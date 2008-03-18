@@ -89,25 +89,6 @@ static int get_pos(lua_State* L, pos* p)
     return 1;
 }
 
-static int get_char_attr(lua_State* L, int stack_pos)
-{
-    int mode = A_NORMAL;
-
-    lua_pushnil(L);
-    while (lua_next(L, stack_pos) != 0) {
-        if (lua_isstring(L, -2)) {
-            const char* str;
-
-            str = lua_tostring(L, -2);
-            lua_toboolean(L, -1) ?
-                (mode |= get_mode_enum(str)) : (mode &= ~get_mode_enum(str));
-        }
-        lua_pop(L, 1);
-    }
-
-    return mode;
-}
-
 static int get_char_color(lua_State* L, int stack_pos)
 {
     const char* str;
@@ -125,6 +106,33 @@ static int get_char_color(lua_State* L, int stack_pos)
     }
 
     return COLOR_PAIR(val);
+}
+
+static int get_char_attr(lua_State* L, int stack_pos)
+{
+    int mode = A_NORMAL;
+
+    lua_pushnil(L);
+    while (lua_next(L, stack_pos) != 0) {
+        if (lua_isstring(L, -2)) {
+            const char* str;
+
+            str = lua_tostring(L, -2);
+            if (!strcmp(str, "color")) {
+                mode |= get_char_color(L, stack_pos);
+            }
+            else {
+                int cur_mode;
+
+                cur_mode = get_mode_enum(str);
+
+                lua_toboolean(L, -1) ? (mode |= cur_mode) : (mode &= ~cur_mode);
+            }
+        }
+        lua_pop(L, 1);
+    }
+
+    return mode;
 }
 
 static int l_initscr(lua_State* L)
@@ -305,21 +313,19 @@ static int l_addch(lua_State* L)
     pos p;
     size_t l;
     attr_t mode = 0;
-    short color = 0;
     chtype ch;
 
     is_mv = get_pos(L, &p);
     ch = get_char_enum(luaL_checklstring(L, 1, &l));
     if (lua_istable(L, 2)) {
         mode = get_char_attr(L, 2);
-        color = get_char_color(L, 2);
     }
 
     if (is_mv) {
-        lua_pushboolean(L, mvaddch(p.y, p.x, ch | mode | color) == OK);
+        lua_pushboolean(L, mvaddch(p.y, p.x, ch | mode) == OK);
     }
     else {
-        lua_pushboolean(L, addch(ch | mode | color) == OK);
+        lua_pushboolean(L, addch(ch | mode) == OK);
     }
 
     return 1;
@@ -337,9 +343,14 @@ static int l_addstr(lua_State* L)
     is_mv = get_pos(L, &p);
     str = luaL_checklstring(L, 1, &l);
     if (lua_istable(L, 2)) {
+        int new_mode, new_color;
+
         set_attrs = 1;
         attr_get(&old_mode, &old_color, NULL);
-        attr_set(get_char_attr(L, 2), get_char_color(L, 2), NULL);
+        new_mode = get_char_attr(L, 2);
+        new_color = new_mode & A_COLOR;
+        new_mode &= A_ATTRIBUTES;
+        attr_set(new_mode, new_color, NULL);
     }
 
     if (is_mv) {
@@ -406,21 +417,19 @@ static int l_insch(lua_State* L)
     pos p;
     size_t l;
     attr_t mode = 0;
-    short color = 0;
     chtype ch;
 
     is_mv = get_pos(L, &p);
     ch = get_char_enum(luaL_checklstring(L, 1, &l));
     if (lua_istable(L, 2)) {
         mode = get_char_attr(L, 2);
-        color = get_char_color(L, 2);
     }
 
     if (is_mv) {
-        lua_pushboolean(L, mvinsch(p.y, p.x, ch | mode | color) == OK);
+        lua_pushboolean(L, mvinsch(p.y, p.x, ch | mode) == OK);
     }
     else {
-        lua_pushboolean(L, insch(ch | mode | color) == OK);
+        lua_pushboolean(L, insch(ch | mode) == OK);
     }
 
     return 1;
@@ -438,9 +447,14 @@ static int l_insstr(lua_State* L)
     is_mv = get_pos(L, &p);
     str = luaL_checklstring(L, 1, &l);
     if (lua_istable(L, 2)) {
+        int new_mode, new_color;
+
         set_attrs = 1;
         attr_get(&old_mode, &old_color, NULL);
-        attr_set(get_char_attr(L, 2), get_char_color(L, 2), NULL);
+        new_mode = get_char_attr(L, 2);
+        new_color = new_mode & A_COLOR;
+        new_mode &= A_ATTRIBUTES;
+        attr_set(new_mode, new_color, NULL);
     }
 
     if (is_mv) {
