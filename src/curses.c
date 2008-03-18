@@ -1,3 +1,4 @@
+#include "strings.h"
 #include <curses.h>
 #include <lua.h>
 #include <lauxlib.h>
@@ -12,116 +13,7 @@ typedef struct _pos {
     int y;
 } pos;
 
-typedef struct _trans {
-    const char* str;
-    int tag;
-} trans;
-
-static trans colors[] = {
-    {"black",   COLOR_BLACK},
-    {"red",     COLOR_RED},
-    {"green",   COLOR_GREEN},
-    {"yellow",  COLOR_YELLOW},
-    {"blue",    COLOR_BLUE},
-    {"magenta", COLOR_MAGENTA},
-    {"cyan",    COLOR_CYAN},
-    {"white",   COLOR_WHITE},
-};
-
-static trans modes[] = {
-    {"standout",   A_STANDOUT},
-    {"underline",  A_UNDERLINE},
-    {"reverse",    A_REVERSE},
-    {"blink",      A_BLINK},
-    {"dim",        A_DIM},
-    {"bold",       A_BOLD},
-    {"protect",    A_PROTECT},
-    {"invis",      A_INVIS},
-    {"altcharset", A_ALTCHARSET},
-    {"chartext",   A_CHARTEXT},
-};
-
-static trans keys[] = {
-    {"left",      KEY_LEFT},
-    {"right",     KEY_RIGHT},
-    {"up",        KEY_UP},
-    {"down",      KEY_DOWN},
-    {"home",      KEY_HOME},
-    {"end",       KEY_END},
-    {"backspace", KEY_BACKSPACE},
-    {"enter",     KEY_ENTER},
-    {"page down", KEY_NPAGE},
-    {"page up",   KEY_PPAGE},
-    {"break",     KEY_BREAK},
-    {"delete",    KEY_DC},
-    {"insert",    KEY_IC},
-};
-
-static int ncolors = 1, ncolor_pairs = 1;
-
-static int str2enum(const trans table[], int table_len, const char* str)
-{
-    int i;
-
-    for (i = 0; i < table_len; ++i) {
-        if (!strcmp(str, table[i].str)) {
-            return table[i].tag;
-        }
-    }
-
-    return -1;
-}
-
-static const char* enum2str(const trans* table, int table_len, int tag)
-{
-    int i;
-
-    for (i = 0; i < table_len; ++i) {
-        if (tag == table[i].tag) {
-            return table[i].str;
-        }
-    }
-
-    return NULL;
-}
-
-static int get_color_enum(const char* str)
-{
-    return str2enum(colors, sizeof(colors) / sizeof(colors[0]), str);
-}
-
-static int get_mode_enum(const char* str)
-{
-    int ret;
-
-    ret = str2enum(modes, sizeof(modes) / sizeof(modes[0]), str);
-
-    return ret == -1 ? A_NORMAL : ret;
-}
-
-static int get_key_enum(const char* str)
-{
-    int ret;
-
-    ret = str2enum(keys, sizeof(keys) / sizeof(keys[0]), str);
-
-    return ret == -1 ? (int)str[0] : ret;
-}
-
-static const char* get_color_str(int tag)
-{
-    return enum2str(colors, sizeof(colors) / sizeof(colors[0]), tag);
-}
-
-static const char* get_mode_str(int tag)
-{
-    return enum2str(modes, sizeof(modes) / sizeof(modes[0]), tag);
-}
-
-static const char* get_key_str(int tag)
-{
-    return enum2str(keys, sizeof(keys) / sizeof(keys[0]), tag);
-}
+static int ncolors = 0, ncolor_pairs = 0;
 
 static int get_color_pair(lua_State* L, const char* str)
 {
@@ -156,18 +48,18 @@ static void init_color_pairs(lua_State* L)
     lua_pop(L, 1);
 }
 
+static void register_color(const char* color_str, int color_tag, void* data)
+{
+    lua_pushinteger((lua_State*)data, color_tag);
+    lua_setfield((lua_State*)data, -2, color_str);
+    ncolors++;
+}
+
 static void init_colors(lua_State* L)
 {
-    int i;
-
-    ncolors = sizeof(colors) / sizeof(colors[0]);
-
     lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
     lua_newtable(L);
-    for (i = 0; i < ncolors; ++i) {
-        lua_pushinteger(L, colors[i].tag);
-        lua_setfield(L, -2, colors[i].str);
-    }
+    each_color(register_color, L);
     lua_setfield(L, -2, "colors");
     lua_pop(L, 1);
 }
@@ -333,7 +225,7 @@ static int l_init_pair(lua_State* L)
          * and we want to leave that C color_pair value on top of the stack
          * for consistency */
         lua_pop(L, 1);
-        lua_pushinteger(L, ncolor_pairs++);
+        lua_pushinteger(L, ++ncolor_pairs);
         lua_pushvalue(L, -1);
         lua_setfield(L, -3, name);
     }
@@ -363,8 +255,9 @@ static int l_init_pair(lua_State* L)
 
 static int l_getch(lua_State* L)
 {
-    int c, i, found = 0;
+    int c;
     pos p;
+    const char* key_name;
 
     if (get_pos(L, &p)) {
         c = mvgetch(p.y, p.x);
@@ -379,24 +272,13 @@ static int l_getch(lua_State* L)
         return 2;
     }
 
-    for (i = 0; i < sizeof(keys) / sizeof(keys[0]); ++i) {
-        if (c == keys[i].tag) {
-            lua_pushstring(L, keys[i].str);
-            found = 1;
-            break;
-        }
-    }
+    key_name = get_key_str(c);
 
-    if (!found) {
-        if (c >= KEY_F(1) && c <= KEY_F(64)) {
-            lua_pushfstring(L, "F%d", c - KEY_F0);
-        }
-        else {
-            char s[1];
+    if (key_name == NULL) {
+        char s;
 
-            s[0] = c;
-            lua_pushlstring(L, s, 1);
-        }
+        s = c;
+        lua_pushlstring(L, &s, 1);
     }
 
     return 1;

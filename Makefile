@@ -1,7 +1,7 @@
 include Make.config
 
 BIN = src/curses.so
-OBJ = src/curses.o
+OBJ = src/curses.o src/strings.o
 CC = gcc
 INCLUDES =
 DEFINES =
@@ -10,7 +10,7 @@ COMMONFLAGS = -Werror -Wall -pedantic -O0 -g -pipe -fpic
 CFLAGS = -c $(INCLUDES) $(DEFINES) $(COMMONFLAGS)
 LDFLAGS = $(LIBS) $(COMMONFLAGS) -shared
 
-SRC = src/curses.c
+SRC = src/curses.c src/strings.c src/strings.h
 TEST_LUAS = test/rl.lua \
             test/test.lua
 TTT_TEST_DIR = tictactoe
@@ -36,7 +36,7 @@ clean :
 	rm -f $(OBJ) $(BIN)
 
 dep :
-	makedepend $(INCLUDES) $(DEFINES) -Y *.c *.h > /dev/null 2>&1
+	makedepend $(INCLUDES) $(DEFINES) -Y $(SRC) > /dev/null 2>&1
 	rm -f Makefile.bak
 
 install :
@@ -57,3 +57,8 @@ $(VERSION).tar.gz : $(SRC) $(TEST_LUAS) $(OTHER_FILES)
 	@cp $(OTHER_FILES) $(VERSION)
 	@tar czf $(VERSION).tar.gz $(VERSION)
 	@rm -rf $(VERSION)
+
+# DO NOT DELETE
+
+src/curses.o: src/strings.h
+src/strings.o: src/strings.h
