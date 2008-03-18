@@ -4,7 +4,6 @@
 - reading from the screen (curs_instr, curs_inch)
 - reading input (ungetch (curs_getch), curs_getstr
 - attribute support (curs_attr)
-- terminal attributes (curs_termattrs)
 - finish up curs_inopts and curs_outopts
 - finish up curs_color (color_content, pair_content)
 - scrolling support (curs_scroll)
@@ -15,6 +14,7 @@
 - border support (curs_border)
 - status line stuff (curs_slk)
 - mouse support (curs_mouse)
+- terminal attributes (curs_termattrs)
 - pad support (curs_pad)
 - screen dump support (curs_scr_dump)
 - multiple term support
