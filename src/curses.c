@@ -150,6 +150,12 @@ static int l_endwin(lua_State* L)
     return 1;
 }
 
+static int l_isendwin(lua_State* L)
+{
+    lua_pushboolean(L, isendwin());
+    return 1;
+}
+
 static int l_start_color(lua_State* L)
 {
     if (has_colors()) {
@@ -572,6 +578,7 @@ static int l_color_pairs(lua_State* L)
 const luaL_Reg reg[] = {
     { "initscr", l_initscr },
     { "endwin", l_endwin },
+    { "isendwin", l_isendwin },
     { "start_color", l_start_color },
     { "setup_term", l_setup_term },
     { "init_color", l_init_color },

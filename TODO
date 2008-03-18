@@ -3,7 +3,6 @@
 - curs_addch (echochar)
 - reading from the screen (curs_instr, curs_inch)
 - reading input (ungetch (curs_getch), curs_getstr
-- isendwin (curs_initscr)
 - attribute support (curs_attr)
 - terminal attributes (curs_termattrs)
 - finish up curs_inopts and curs_outopts
