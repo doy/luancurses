@@ -89,12 +89,6 @@ static int get_pos(lua_State* L, pos* p)
     return 1;
 }
 
-static chtype get_char(const char* str)
-{
-    /* add the ACS_ defines here */
-    return str[0];
-}
-
 static int get_char_attr(lua_State* L, int stack_pos)
 {
     int mode = A_NORMAL;
@@ -312,7 +306,7 @@ static int l_addch(lua_State* L)
     chtype ch;
 
     is_mv = get_pos(L, &p);
-    ch = get_char(luaL_checklstring(L, 1, &l));
+    ch = get_char_enum(luaL_checklstring(L, 1, &l));
     if (lua_istable(L, 2)) {
         mode = get_char_attr(L, 2);
         color = get_char_color(L, 2);
@@ -413,7 +407,7 @@ static int l_insch(lua_State* L)
     chtype ch;
 
     is_mv = get_pos(L, &p);
-    ch = get_char(luaL_checklstring(L, 1, &l));
+    ch = get_char_enum(luaL_checklstring(L, 1, &l));
     if (lua_istable(L, 2)) {
         mode = get_char_attr(L, 2);
         color = get_char_color(L, 2);

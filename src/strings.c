@@ -49,6 +49,41 @@ static trans keys[] = {
     {"insert",    KEY_IC},
 };
 
+static trans chars[] = {
+    {"block",    ACS_BLOCK},
+    {"board",    ACS_BOARD},
+    {"btee",     ACS_BTEE},
+    {"bullet",   ACS_BULLET},
+    {"ckboard",  ACS_CKBOARD},
+    {"darrow",   ACS_DARROW},
+    {"degree",   ACS_DEGREE},
+    {"diamond",  ACS_DIAMOND},
+    {"gequal",   ACS_GEQUAL},
+    {"hline",    ACS_HLINE},
+    {"lantern",  ACS_LANTERN},
+    {"larrow",   ACS_LARROW},
+    {"lequal",   ACS_LEQUAL},
+    {"llcorner", ACS_LLCORNER},
+    {"lrcorner", ACS_LRCORNER},
+    {"ltee",     ACS_LTEE},
+    {"nequal",   ACS_NEQUAL},
+    {"pi",       ACS_PI},
+    {"plminus",  ACS_PLMINUS},
+    {"plus",     ACS_PLUS},
+    {"rarrow",   ACS_RARROW},
+    {"rtee",     ACS_RTEE},
+    {"s1",       ACS_S1},
+    {"s3",       ACS_S3},
+    {"s7",       ACS_S7},
+    {"s9",       ACS_S9},
+    {"sterling", ACS_STERLING},
+    {"ttee",     ACS_TTEE},
+    {"uarrow",   ACS_UARROW},
+    {"ulcorner", ACS_ULCORNER},
+    {"urcorner", ACS_URCORNER},
+    {"vline",    ACS_VLINE},
+};
+
 static const char* fn_keys[] = {
     "F0",  "F1",  "F2",  "F3",  "F4",  "F5",  "F6",  "F7",
     "F8",  "F9",  "F10", "F11", "F12", "F13", "F14", "F15",
@@ -125,6 +160,15 @@ int get_key_enum(const char* str)
     return ret == -1 ? (int)str[0] : ret;
 }
 
+chtype get_char_enum(const char* str)
+{
+    int ret;
+
+    ret = str2enum(chars, lengthof(chars), str);
+
+    return ret == -1 ? (chtype)str[0] : ret;
+}
+
 const char* get_color_str(int tag)
 {
     return enum2str(colors, lengthof(colors), tag);
@@ -144,6 +188,11 @@ const char* get_key_str(int tag)
     return enum2str(keys, lengthof(keys), tag);
 }
 
+const char* get_char_str(chtype tag)
+{
+    return enum2str(chars, lengthof(chars), tag);
+}
+
 void each_color(table_cb cb, void* data)
 {
     each_item(colors, lengthof(colors), cb, data);
@@ -157,4 +206,9 @@ void each_mode(table_cb cb, void* data)
 void each_key(table_cb cb, void* data)
 {
     each_item(keys, lengthof(keys), cb, data);
+}
+
+void each_char(table_cb cb, void* data)
+{
+    each_item(chars, lengthof(chars), cb, data);
 }
