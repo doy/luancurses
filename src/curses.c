@@ -102,7 +102,7 @@ static int get_char_color(lua_State* L, int stack_pos)
     lua_pop(L, 1);
     val = get_color_pair(L, str);
     if (val == -1) {
-        return luaL_error(L, "Unknown color pair %s", str);
+        return luaL_error(L, "Unknown color pair \"%s\"", str);
     }
 
     return COLOR_PAIR(val);
@@ -126,7 +126,7 @@ static int get_char_attr(lua_State* L, int stack_pos)
 
                 cur_mode = get_mode_enum(str);
                 if (cur_mode == -1) {
-                    return luaL_error(L, "Unknown attribute %s", str);
+                    return luaL_error(L, "Unknown attribute \"%s\"", str);
                 }
 
                 lua_toboolean(L, -1) ? (mode |= cur_mode) : (mode &= ~cur_mode);
