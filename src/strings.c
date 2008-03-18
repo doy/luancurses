@@ -165,16 +165,16 @@ int get_key_enum(const char* str)
     return ret == -1 ? (int)str[0] : ret;
 }
 
-chtype get_char_enum(const char* str)
+int get_char_enum(const char* str)
 {
     /*
     int ret;
 
     ret = str2enum(chars, lengthof(chars), str);
 
-    return ret == -1 ? (chtype)str[0] : ret;
+    return ret == -1 ? (int)str[0] : ret;
     */
-    return str[0];
+    return (int)str[0];
 }
 
 const char* get_color_str(int tag)
@@ -196,7 +196,7 @@ const char* get_key_str(int tag)
     return enum2str(keys, lengthof(keys), tag);
 }
 
-const char* get_char_str(chtype tag)
+const char* get_char_str(int tag)
 {
     /*
     return enum2str(chars, lengthof(chars), tag);
