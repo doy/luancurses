@@ -379,6 +379,37 @@ static int l_addch(lua_State* L)
     return 1;
 }
 
+static int l_echochar(lua_State* L)
+{
+    int is_mv;
+    pos p;
+    size_t l;
+    attr_t mode = 0;
+    chtype ch;
+
+    is_mv = get_pos(L, &p);
+    ch = get_char_enum(luaL_checklstring(L, 1, &l));
+    if (lua_istable(L, 2)) {
+        mode = get_char_attr(L, 2);
+    }
+
+    if (is_mv) {
+        int ret;
+
+        ret = move(p.y, p.x);
+        if (ret == OK) {
+            ret = echochar(ch | mode);
+        }
+
+        lua_pushboolean(L, ret == OK);
+    }
+    else {
+        lua_pushboolean(L, echochar(ch | mode) == OK);
+    }
+
+    return 1;
+}
+
 static int l_addstr(lua_State* L)
 {
     int is_mv, set_attrs = 0;
@@ -586,6 +617,7 @@ const luaL_Reg reg[] = {
     { "getch", l_getch },
     { "move", l_move },
     { "addch", l_addch },
+    { "echochar", l_echochar },
     { "addstr", l_addstr },
     { "erase", l_erase },
     { "clear", l_clear },
