@@ -13,7 +13,7 @@ typedef struct _pos {
     int y;
 } pos;
 
-static int ncolors = 0, ncolor_pairs = 0;
+static int ncolors = 0, ncolor_pairs = 0, default_color_available = 0;
 
 static int get_color_pair(lua_State* L, const char* str)
 {
@@ -303,8 +303,14 @@ static int l_init_pair(lua_State* L)
 
     /* check the arguments, and get them */
     name = luaL_checklstring(L, 1, NULL);
-    fg =   luaL_optlstring(L, 2, "white", NULL);
-    bg =   luaL_optlstring(L, 3, "black", NULL);
+    if (default_color_available) {
+        fg =   luaL_optlstring(L, 2, "default", NULL);
+        bg =   luaL_optlstring(L, 3, "default", NULL);
+    }
+    else {
+        fg =   luaL_optlstring(L, 2, "white", NULL);
+        bg =   luaL_optlstring(L, 3, "black", NULL);
+    }
 
     lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
 
