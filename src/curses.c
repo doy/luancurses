@@ -359,20 +359,19 @@ static int l_addch(lua_State* L)
 {
     int is_mv;
     pos p;
-    attr_t mode = 0;
     chtype ch;
 
     is_mv = get_pos(L, &p);
     ch = get_char_enum(luaL_checklstring(L, 1, NULL));
     if (lua_istable(L, 2)) {
-        mode = get_char_attr(L, 2);
+        ch |= get_char_attr(L, 2);
     }
 
     if (is_mv) {
-        lua_pushboolean(L, mvaddch(p.y, p.x, ch | mode) == OK);
+        lua_pushboolean(L, mvaddch(p.y, p.x, ch) == OK);
     }
     else {
-        lua_pushboolean(L, addch(ch | mode) == OK);
+        lua_pushboolean(L, addch(ch) == OK);
     }
 
     return 1;
@@ -382,13 +381,12 @@ static int l_echochar(lua_State* L)
 {
     int is_mv;
     pos p;
-    attr_t mode = 0;
     chtype ch;
 
     is_mv = get_pos(L, &p);
     ch = get_char_enum(luaL_checklstring(L, 1, NULL));
     if (lua_istable(L, 2)) {
-        mode = get_char_attr(L, 2);
+        ch |= get_char_attr(L, 2);
     }
 
     if (is_mv) {
@@ -396,13 +394,13 @@ static int l_echochar(lua_State* L)
 
         ret = move(p.y, p.x);
         if (ret == OK) {
-            ret = echochar(ch | mode);
+            ret = echochar(ch);
         }
 
         lua_pushboolean(L, ret == OK);
     }
     else {
-        lua_pushboolean(L, echochar(ch | mode) == OK);
+        lua_pushboolean(L, echochar(ch) == OK);
     }
 
     return 1;
@@ -491,20 +489,19 @@ static int l_insch(lua_State* L)
 {
     int is_mv;
     pos p;
-    attr_t mode = 0;
     chtype ch;
 
     is_mv = get_pos(L, &p);
     ch = get_char_enum(luaL_checklstring(L, 1, NULL));
     if (lua_istable(L, 2)) {
-        mode = get_char_attr(L, 2);
+        ch |= get_char_attr(L, 2);
     }
 
     if (is_mv) {
-        lua_pushboolean(L, mvinsch(p.y, p.x, ch | mode) == OK);
+        lua_pushboolean(L, mvinsch(p.y, p.x, ch) == OK);
     }
     else {
-        lua_pushboolean(L, insch(ch | mode) == OK);
+        lua_pushboolean(L, insch(ch) == OK);
     }
 
     return 1;
