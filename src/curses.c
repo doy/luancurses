@@ -8,6 +8,13 @@
 
 #define REG_TABLE "luancurses"
 
+#define NO_ARG_FUNCTION(name) \
+static int l_##name(lua_State* L) \
+{ \
+    lua_pushboolean(L, name() == OK); \
+    return 1; \
+}
+
 typedef struct _pos {
     int x;
     int y;
@@ -150,17 +157,17 @@ static int get_char_attr(lua_State* L, int stack_pos)
     return mode;
 }
 
-static int l_initscr(lua_State* L)
-{
-    lua_pushboolean(L, initscr() == OK);
-    return 1;
-}
-
-static int l_endwin(lua_State* L)
-{
-    lua_pushboolean(L, endwin() == OK);
-    return 1;
-}
+NO_ARG_FUNCTION(initscr)
+NO_ARG_FUNCTION(endwin)
+NO_ARG_FUNCTION(erase)
+NO_ARG_FUNCTION(clear)
+NO_ARG_FUNCTION(clrtobot)
+NO_ARG_FUNCTION(clrtoeol)
+NO_ARG_FUNCTION(deleteln)
+NO_ARG_FUNCTION(insertln)
+NO_ARG_FUNCTION(refresh)
+NO_ARG_FUNCTION(beep)
+NO_ARG_FUNCTION(flash)
 
 static int l_isendwin(lua_State* L)
 {
@@ -543,30 +550,6 @@ static int l_addstr(lua_State* L)
     return 1;
 }
 
-static int l_erase(lua_State* L)
-{
-    lua_pushboolean(L, (erase() == OK));
-    return 1;
-}
-
-static int l_clear(lua_State* L)
-{
-    lua_pushboolean(L, (clear() == OK));
-    return 1;
-}
-
-static int l_clrtobot(lua_State* L)
-{
-    lua_pushboolean(L, (clrtobot() == OK));
-    return 1;
-}
-
-static int l_clrtoeol(lua_State* L)
-{
-    lua_pushboolean(L, (clrtoeol() == OK));
-    return 1;
-}
-
 static int l_delch(lua_State* L)
 {
     pos p;
@@ -578,12 +561,6 @@ static int l_delch(lua_State* L)
         lua_pushboolean(L, delch() == OK);
     }
 
-    return 1;
-}
-
-static int l_deleteln(lua_State* L)
-{
-    lua_pushboolean(L, (deleteln() == OK));
     return 1;
 }
 
@@ -654,18 +631,6 @@ static int l_insdelln(lua_State* L)
     return 1;
 }
 
-static int l_insertln(lua_State* L)
-{
-    lua_pushboolean(L, (insertln() == OK));
-    return 1;
-}
-
-static int l_refresh(lua_State* L)
-{
-    lua_pushboolean(L, (refresh() == OK));
-    return 1;
-}
-
 static int l_getmaxyx(lua_State* L)
 {
     int x, y;
@@ -697,18 +662,6 @@ static int l_colors(lua_State* L)
 static int l_color_pairs(lua_State* L)
 {
     lua_pushinteger(L, COLOR_PAIRS);
-    return 1;
-}
-
-static int l_beep(lua_State* L)
-{
-    lua_pushboolean(L, (beep() == OK));
-    return 1;
-}
-
-static int l_flash(lua_State* L)
-{
-    lua_pushboolean(L, (beep() == OK));
     return 1;
 }
 
