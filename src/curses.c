@@ -226,21 +226,69 @@ static int l_setup_term(lua_State* L)
             const char* str;
 
             str = lua_tostring(L, -2);
-            /* XXX: this certainly needs expansion */
-            if (!strcmp(str, "nl")) {
-                ret += ((lua_toboolean(L, -1) ? nl() : nonl()) == OK);
-            }
-            else if (!strcmp(str, "cbreak")) {
+            if (!strcmp(str, "cbreak")) {
                 ret += ((lua_toboolean(L, -1) ? cbreak() : nocbreak()) == OK);
             }
             else if (!strcmp(str, "echo")) {
                 ret += ((lua_toboolean(L, -1) ? echo() : noecho()) == OK);
             }
+            else if (!strcmp(str, "halfdelay")) {
+                ret += (halfdelay(lua_tointeger(L, -1)) == OK);
+            }
+            else if (!strcmp(str, "intrflush")) {
+                ret += (intrflush(stdscr, lua_toboolean(L, -1)) == OK);
+            }
             else if (!strcmp(str, "keypad")) {
                 ret += (keypad(stdscr, lua_toboolean(L, -1)) == OK);
             }
+            else if (!strcmp(str, "meta")) {
+                ret += (meta(stdscr, lua_toboolean(L, -1)) == OK);
+            }
+            else if (!strcmp(str, "nodelay")) {
+                ret += (nodelay(stdscr, lua_toboolean(L, -1)) == OK);
+            }
+            else if (!strcmp(str, "raw")) {
+                ret += ((lua_toboolean(L, -1) ? raw() : noraw()) == OK);
+            }
+            else if (!strcmp(str, "qiflush")) {
+                lua_toboolean(L, -1) ? qiflush() : noqiflush();
+                ret++;
+            }
+            else if (!strcmp(str, "timeout")) {
+                if (lua_isnil(L, -1)) {
+                    ret += (notimeout(stdscr, TRUE) == OK);
+                }
+                else {
+                    timeout(lua_tointeger(L, -1));
+                    ret++;
+                }
+            }
+            else if (!strcmp(str, "typeahead")) {
+                ret += ((lua_toboolean(L, -1) ? typeahead(0) :
+                                                typeahead(-1)) == OK);
+            }
+            else if (!strcmp(str, "clear")) {
+                ret += (clearok(stdscr, lua_toboolean(L, -1)) == OK);
+            }
+            else if (!strcmp(str, "idl")) {
+                ret += (idlok(stdscr, lua_toboolean(L, -1)) == OK);
+            }
+            else if (!strcmp(str, "idc")) {
+                idcok(stdscr, lua_toboolean(L, -1));
+                ret++;
+            }
+            else if (!strcmp(str, "immed")) {
+                immedok(stdscr, lua_toboolean(L, -1));
+                ret++;
+            }
+            else if (!strcmp(str, "leave")) {
+                ret += (leaveok(stdscr, lua_toboolean(L, -1)) == OK);
+            }
             else if (!strcmp(str, "scroll")) {
                 ret += (scrollok(stdscr, lua_toboolean(L, -1)) == OK);
+            }
+            else if (!strcmp(str, "nl")) {
+                ret += ((lua_toboolean(L, -1) ? nl() : nonl()) == OK);
             }
             else {
                 luaL_error(L, "Unknown or unimplemented terminal mode %s", str);
