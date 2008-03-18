@@ -102,7 +102,7 @@ static int get_char_color(lua_State* L, int stack_pos)
     lua_pop(L, 1);
     val = get_color_pair(L, str);
     if (val == -1) {
-        return luaL_error(L, "Unknown color_pair %s", str);
+        return luaL_error(L, "Unknown color pair %s", str);
     }
 
     return COLOR_PAIR(val);
