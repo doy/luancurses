@@ -59,16 +59,117 @@ static trans keys[] = {
 
 static int ncolors = 1, ncolor_pairs = 1;
 
+static int str2enum(const trans table[], int table_len, const char* str)
+{
+    int i;
+
+    for (i = 0; i < table_len; ++i) {
+        if (!strcmp(str, table[i].str)) {
+            return table[i].tag;
+        }
+    }
+
+    return -1;
+}
+
+static const char* enum2str(const trans* table, int table_len, int tag)
+{
+    int i;
+
+    for (i = 0; i < table_len; ++i) {
+        if (tag == table[i].tag) {
+            return table[i].str;
+        }
+    }
+
+    return NULL;
+}
+
+static int get_color_enum(const char* str)
+{
+    return str2enum(colors, sizeof(colors) / sizeof(colors[0]), str);
+}
+
+static int get_mode_enum(const char* str)
+{
+    int ret;
+
+    ret = str2enum(modes, sizeof(modes) / sizeof(modes[0]), str);
+
+    return ret == -1 ? A_NORMAL : ret;
+}
+
+static int get_key_enum(const char* str)
+{
+    int ret;
+
+    ret = str2enum(keys, sizeof(keys) / sizeof(keys[0]), str);
+
+    return ret == -1 ? (int)str[0] : ret;
+}
+
+static const char* get_color_str(int tag)
+{
+    return enum2str(colors, sizeof(colors) / sizeof(colors[0]), tag);
+}
+
+static const char* get_mode_str(int tag)
+{
+    return enum2str(modes, sizeof(modes) / sizeof(modes[0]), tag);
+}
+
+static const char* get_key_str(int tag)
+{
+    return enum2str(keys, sizeof(keys) / sizeof(keys[0]), tag);
+}
+
+static int get_color_pair(lua_State* L, const char* str)
+{
+    int ret = 0;
+
+    lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
+    lua_getfield(L, -1, "color_pairs");
+    lua_pushnil(L);
+    while (lua_next(L, -2) != 0) {
+        if (lua_isstring(L, -2)) {
+            const char* key;
+
+            key = lua_tostring(L, -2);
+            if (!strcmp(key, str)) {
+                ret = lua_tointeger(L, -1);
+                lua_pop(L, 2);
+                break;
+            }
+        }
+        lua_pop(L, 1);
+    }
+    lua_pop(L, 2);
+
+    return ret;
+}
+
+static void init_color_pairs(lua_State* L)
+{
+    lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
+    lua_newtable(L);
+    lua_setfield(L, -2, "color_pairs");
+    lua_pop(L, 1);
+}
+
 static void init_colors(lua_State* L)
 {
     int i;
 
     ncolors = sizeof(colors) / sizeof(colors[0]);
 
+    lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
+    lua_newtable(L);
     for (i = 0; i < ncolors; ++i) {
         lua_pushinteger(L, colors[i].tag);
         lua_setfield(L, -2, colors[i].str);
     }
+    lua_setfield(L, -2, "colors");
+    lua_pop(L, 1);
 }
 
 static int get_pos(lua_State* L, pos* p)
@@ -96,19 +197,6 @@ static int get_pos(lua_State* L, pos* p)
     return 1;
 }
 
-static int get_mode(lua_State* L, const char* str)
-{
-    int i;
-
-    for (i = 0; i < sizeof(modes) / sizeof(modes[0]); ++i) {
-        if (!strcmp(str, modes[i].str)) {
-            return modes[i].tag;
-        }
-    }
-
-    return A_NORMAL;
-}
-
 static chtype get_char(const char* str)
 {
     /* add the ACS_ defines here */
@@ -126,7 +214,7 @@ static int get_char_attr(lua_State* L, int stack_pos)
 
             str = lua_tostring(L, -2);
             lua_toboolean(L, -1) ?
-                (mode |= get_mode(L, str)) : (mode &= ~get_mode(L, str));
+                (mode |= get_mode_enum(str)) : (mode &= ~get_mode_enum(str));
         }
         lua_pop(L, 1);
     }
@@ -145,23 +233,7 @@ static int get_char_color(lua_State* L, int stack_pos)
     }
     str = lua_tostring(L, -1);
     lua_pop(L, 1);
-
-    lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
-    lua_getfield(L, -1, "color_pairs");
-    lua_pushnil(L);
-    while (lua_next(L, -2) != 0) {
-        if (lua_isstring(L, -2)) {
-            const char* key;
-
-            key = lua_tostring(L, -2);
-            if (!strcmp(key, str)) {
-                val = lua_tointeger(L, -1);
-            }
-        }
-        lua_pop(L, 1);
-    }
-    lua_pop(L, 2);
-
+    val = get_color_pair(L, str);
     if (val == -1) {
         return luaL_error(L, "Unknown color_pair %s", str);
     }
@@ -184,12 +256,8 @@ static int l_endwin(lua_State* L)
 static int l_start_color(lua_State* L)
 {
     if (has_colors()) {
-        lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
-        lua_newtable(L);
-        lua_setfield(L, -2, "color_pairs");
-        lua_newtable(L);
+        init_color_pairs(L);
         init_colors(L);
-        lua_setfield(L, -2, "colors");
         lua_pushboolean(L, start_color() == OK);
         use_default_colors();
     }
