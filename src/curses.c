@@ -598,6 +598,18 @@ static int l_color_pairs(lua_State* L)
     return 1;
 }
 
+static int l_beep(lua_State* L)
+{
+    lua_pushboolean(L, (beep() == OK));
+    return 1;
+}
+
+static int l_flash(lua_State* L)
+{
+    lua_pushboolean(L, (beep() == OK));
+    return 1;
+}
+
 const luaL_Reg reg[] = {
     { "initscr", l_initscr },
     { "endwin", l_endwin },
@@ -626,6 +638,8 @@ const luaL_Reg reg[] = {
     { "getyx", l_getyx },
     { "colors", l_colors },
     { "color_pairs", l_color_pairs },
+    { "beep", l_beep },
+    { "flash", l_flash },
     { NULL, NULL },
 };
 

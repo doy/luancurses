@@ -6,7 +6,6 @@
 - finish up curs_inopts and curs_outopts
 - finish up curs_color (color_content, pair_content)
 - scrolling support (curs_scroll)
-- curs_beep
 - support the rest of the refresh options (curs_refresh)
 - window background support (curs_bkgd)
 - multiple window support (all fns that start with w, curs_overlay, curs_initscr, curs_window, curs_getyx (par, beg), curs_touch, curs_overlay)
