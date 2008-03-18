@@ -206,8 +206,47 @@ static int l_setup_term(lua_State* L)
 
 static int l_init_color(lua_State* L)
 {
-    /* test can_change_color here */
-    return 0;
+    const char* name;
+    int color_val;
+    short r, g, b;
+
+    if (can_change_color() == FALSE) {
+        lua_pushboolean(L, FALSE);
+        return 1;
+    }
+
+    name = luaL_checklstring(L, 1, NULL);
+
+    lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
+    lua_getfield(L, -1, "colors");
+    lua_getfield(L, -1, name);
+    if (lua_isnil(L, -1)) {
+        lua_pop(L, 1);
+        lua_pushinteger(L, ++ncolors);
+        lua_pushvalue(L, -1);
+        lua_setfield(L, -3, name);
+    }
+    color_val = lua_tointeger(L, -1);
+    lua_pop(L, 2);
+
+    if (lua_istable(L, 2)) {
+        lua_getfield(L, 2, "r");
+        lua_getfield(L, 2, "g");
+        lua_getfield(L, 2, "b");
+        r = luaL_checkinteger(L, -3) * 1000 / 256;
+        g = luaL_checkinteger(L, -2) * 1000 / 256;
+        b = luaL_checkinteger(L, -1) * 1000 / 256;
+        lua_pop(L, 3);
+    }
+    else {
+        r = luaL_checkinteger(L, 2) * 1000 / 256;
+        g = luaL_checkinteger(L, 3) * 1000 / 256;
+        b = luaL_checkinteger(L, 4) * 1000 / 256;
+    }
+
+    lua_pushboolean(L, init_color(color_val, r, g, b) == OK);
+
+    return 1;
 }
 
 static int l_init_pair(lua_State* L)
