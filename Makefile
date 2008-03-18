@@ -1,4 +1,5 @@
 include Make.config
+include Make.$(OS)
 
 BIN = src/curses.so
 OBJ = src/curses.o src/strings.o
@@ -6,7 +7,7 @@ CC = gcc
 INCLUDES =
 DEFINES =
 LIBS = -lcurses -llua
-COMMONFLAGS = -Werror -Wall -pedantic -O0 -g -pipe -fpic
+COMMONFLAGS = -Werror -Wall -pedantic -O0 -g -pipe $(OS_FLAGS)
 CFLAGS = -c $(INCLUDES) $(DEFINES) $(COMMONFLAGS)
 LDFLAGS = $(LIBS) $(COMMONFLAGS) -shared
 
