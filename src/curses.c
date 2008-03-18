@@ -390,7 +390,7 @@ static int l_addstr(lua_State* L)
         set_attrs = 1;
         attr_get(&old_mode, &old_color, NULL);
         new_mode = get_char_attr(L, 2);
-        new_color = PAIR_NUMBER(new_mode & A_COLOR);
+        new_color = PAIR_NUMBER(new_mode);
         new_mode &= A_ATTRIBUTES & ~A_COLOR;
         attr_set(new_mode, new_color, NULL);
     }
@@ -494,7 +494,7 @@ static int l_insstr(lua_State* L)
         set_attrs = 1;
         attr_get(&old_mode, &old_color, NULL);
         new_mode = get_char_attr(L, 2);
-        new_color = PAIR_NUMBER(new_mode & A_COLOR);
+        new_color = PAIR_NUMBER(new_mode);
         new_mode &= A_ATTRIBUTES & ~A_COLOR;
         attr_set(new_mode, new_color, NULL);
     }
