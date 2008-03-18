@@ -55,6 +55,16 @@ static void register_color(const char* color_str, int color_tag, void* data)
     ncolors++;
 }
 
+static void register_default_color(lua_State* L)
+{
+    lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
+    lua_getfield(L, -1, "colors");
+    lua_pushinteger(L, -1);
+    lua_setfield(L, -2, "default");
+    lua_pop(L, 2);
+    default_color_available = 1;
+}
+
 static void init_colors(lua_State* L)
 {
     lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
@@ -162,12 +172,43 @@ static int l_start_color(lua_State* L)
         init_color_pairs(L);
         init_colors(L);
         lua_pushboolean(L, start_color() == OK);
-        use_default_colors();
     }
     else {
         lua_pushboolean(L, FALSE);
     }
 
+    return 1;
+}
+
+static int l_use_default_colors(lua_State* L)
+{
+    register_default_color(L);
+    lua_pushboolean(L, use_default_colors() == OK);
+    return 1;
+}
+
+static int l_assume_default_colors(lua_State* L)
+{
+    const char* fg;
+    const char* bg;
+    int nfg, nbg;
+
+    register_default_color(L);
+
+    fg = luaL_optlstring(L, 1, "default", NULL);
+    bg = luaL_optlstring(L, 2, "default", NULL);
+
+    lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
+    lua_getfield(L, -1, "colors");
+    lua_getfield(L, -1, fg);
+    nfg = luaL_checkint(L, -1);
+    lua_pop(L, 1);
+
+    lua_getfield(L, -1, bg);
+    nbg = luaL_checkint(L, -1);
+    lua_pop(L, 3);
+
+    lua_pushboolean(L, assume_default_colors(nfg, nbg) == OK);
     return 1;
 }
 
@@ -615,6 +656,8 @@ const luaL_Reg reg[] = {
     { "endwin", l_endwin },
     { "isendwin", l_isendwin },
     { "start_color", l_start_color },
+    { "use_default_colors", l_use_default_colors },
+    { "assume_default_colors", l_assume_default_colors },
     { "setup_term", l_setup_term },
     { "init_color", l_init_color },
     { "init_pair", l_init_pair },
