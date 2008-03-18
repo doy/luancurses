@@ -3,11 +3,11 @@ Jesse Luehrs (jluehrs2@uiuc.edu)
 
 OVERVIEW
 ========
-Lua-ncurses is a wrapper around the ncurses library for terminal programming. It aims to expose the ncurses library in a way that is more natural to Lua programmers, rather than just be a thin wrapper around C function calls. It is currently rather incomplete, but most basic functionality is available.
+LuaNcurses is a wrapper around the ncurses library for terminal programming. It aims to expose the ncurses library in a way that is more natural to Lua programmers, rather than just be a thin wrapper around C function calls. It is currently rather incomplete, but most basic functionality is available.
 
 INSTALL
 =======
-This module requires Lua 5.1. To install, modify the Make.config file with paths appropriate to your system and run 'make' and 'make install'.
+This module requires Lua 5.1 and the ncurses library. To install, modify the Make.config file with paths appropriate to your system and run 'make' and 'make install'.
 
 DOCUMENTATION
 =============
