@@ -280,7 +280,7 @@ static int l_init_pair(lua_State* L)
     lua_getfield(L, -1, "colors");
     lua_getfield(L, -1, fg);
     if (lua_isnil(L, -1)) {
-        return luaL_error(L, "init_pair: Trying to use a non-existant foreground color");
+        return luaL_error(L, "init_pair: Trying to use a non-existant foreground color: \"%s\"", fg);
     }
     fg_val = lua_tointeger(L, -1);
     lua_pop(L, 1);
@@ -288,7 +288,7 @@ static int l_init_pair(lua_State* L)
     /* and background value */
     lua_getfield(L, -1, bg);
     if (lua_isnil(L, -1)) {
-        return luaL_error(L, "init_pair: Trying to use a non-existant background color");
+        return luaL_error(L, "init_pair: Trying to use a non-existant background color: \"%s\"", bg);
     }
     bg_val = lua_tointeger(L, -1);
     lua_pop(L, 3);
