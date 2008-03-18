@@ -17,7 +17,7 @@ static int ncolors = 0, ncolor_pairs = 0;
 
 static int get_color_pair(lua_State* L, const char* str)
 {
-    int ret = 0;
+    int ret = -1;
 
     lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
     lua_getfield(L, -1, "color_pairs");
