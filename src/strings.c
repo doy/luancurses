@@ -49,6 +49,10 @@ static trans keys[] = {
     {"insert",    KEY_IC},
 };
 
+/* XXX: the ACS_ defines are actually just indexes into another internal array,
+ * which means that we can't use them as initializers. think of a better way
+ * to do this. */
+/*
 static trans chars[] = {
     {"block",    ACS_BLOCK},
     {"board",    ACS_BOARD},
@@ -83,6 +87,7 @@ static trans chars[] = {
     {"urcorner", ACS_URCORNER},
     {"vline",    ACS_VLINE},
 };
+*/
 
 static const char* fn_keys[] = {
     "F0",  "F1",  "F2",  "F3",  "F4",  "F5",  "F6",  "F7",
@@ -162,11 +167,14 @@ int get_key_enum(const char* str)
 
 chtype get_char_enum(const char* str)
 {
+    /*
     int ret;
 
     ret = str2enum(chars, lengthof(chars), str);
 
     return ret == -1 ? (chtype)str[0] : ret;
+    */
+    return str[0];
 }
 
 const char* get_color_str(int tag)
@@ -190,7 +198,10 @@ const char* get_key_str(int tag)
 
 const char* get_char_str(chtype tag)
 {
+    /*
     return enum2str(chars, lengthof(chars), tag);
+    */
+    return NULL;
 }
 
 void each_color(table_cb cb, void* data)
@@ -210,5 +221,7 @@ void each_key(table_cb cb, void* data)
 
 void each_char(table_cb cb, void* data)
 {
+    /*
     each_item(chars, lengthof(chars), cb, data);
+    */
 }
