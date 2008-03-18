@@ -359,12 +359,11 @@ static int l_addch(lua_State* L)
 {
     int is_mv;
     pos p;
-    size_t l;
     attr_t mode = 0;
     chtype ch;
 
     is_mv = get_pos(L, &p);
-    ch = get_char_enum(luaL_checklstring(L, 1, &l));
+    ch = get_char_enum(luaL_checklstring(L, 1, NULL));
     if (lua_istable(L, 2)) {
         mode = get_char_attr(L, 2);
     }
@@ -383,12 +382,11 @@ static int l_echochar(lua_State* L)
 {
     int is_mv;
     pos p;
-    size_t l;
     attr_t mode = 0;
     chtype ch;
 
     is_mv = get_pos(L, &p);
-    ch = get_char_enum(luaL_checklstring(L, 1, &l));
+    ch = get_char_enum(luaL_checklstring(L, 1, NULL));
     if (lua_istable(L, 2)) {
         mode = get_char_attr(L, 2);
     }
@@ -414,13 +412,12 @@ static int l_addstr(lua_State* L)
 {
     int is_mv, set_attrs = 0;
     pos p;
-    size_t l;
     const char* str;
     attr_t old_mode = 0;
     short old_color = 0;
 
     is_mv = get_pos(L, &p);
-    str = luaL_checklstring(L, 1, &l);
+    str = luaL_checklstring(L, 1, NULL);
     if (lua_istable(L, 2)) {
         int new_mode, new_color;
 
@@ -494,12 +491,11 @@ static int l_insch(lua_State* L)
 {
     int is_mv;
     pos p;
-    size_t l;
     attr_t mode = 0;
     chtype ch;
 
     is_mv = get_pos(L, &p);
-    ch = get_char_enum(luaL_checklstring(L, 1, &l));
+    ch = get_char_enum(luaL_checklstring(L, 1, NULL));
     if (lua_istable(L, 2)) {
         mode = get_char_attr(L, 2);
     }
@@ -518,13 +514,12 @@ static int l_insstr(lua_State* L)
 {
     int is_mv, set_attrs = 0;
     pos p;
-    size_t l;
     const char* str;
     attr_t old_mode = 0;
     short old_color = 0;
 
     is_mv = get_pos(L, &p);
-    str = luaL_checklstring(L, 1, &l);
+    str = luaL_checklstring(L, 1, NULL);
     if (lua_istable(L, 2)) {
         int new_mode, new_color;
 
