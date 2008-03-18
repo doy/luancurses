@@ -44,6 +44,8 @@ static void init_color_pairs(lua_State* L)
 {
     lua_getfield(L, LUA_REGISTRYINDEX, REG_TABLE);
     lua_newtable(L);
+    lua_pushinteger(L, 0);
+    lua_setfield(L, -2, "default");
     lua_setfield(L, -2, "color_pairs");
     lua_pop(L, 1);
 }
@@ -346,7 +348,12 @@ static int l_init_pair(lua_State* L)
     bg_val = lua_tointeger(L, -1);
     lua_pop(L, 3);
 
-    lua_pushboolean(L, (init_pair(name_val, fg_val, bg_val) == OK));
+    if (name_val != 0) {
+        lua_pushboolean(L, (init_pair(name_val, fg_val, bg_val) == OK));
+    }
+    else {
+        lua_pushboolean(L, (assume_default_colors(fg_val, bg_val) == OK));
+    }
     return 1;
 }
 
