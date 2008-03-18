@@ -548,7 +548,7 @@ static int l_insdelln(lua_State* L)
 
     n = luaL_checkinteger(L, 1);
 
-    lua_pushboolean(L, (insertln() == OK));
+    lua_pushboolean(L, (insdelln(n) == OK));
     return 1;
 }
 
