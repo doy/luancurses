@@ -268,7 +268,6 @@ static int l_getch(lua_State* L)
     if (c == ERR) {
         lua_pushboolean(L, 0);
         lua_pushstring(L, strerror(errno));
-        fprintf(stderr, "%s\n", lua_tostring(L, -1));
         return 2;
     }
 
