@@ -22,7 +22,7 @@ OTHER_FILES = Makefile \
 	      README \
 	      LICENSE \
 	      TODO
-VERSION = "LuaNcurses-0.01"
+VERSION = "LuaNcurses-0.02"
 
 build : $(BIN)
 

@@ -1,4 +1,4 @@
-LuaNcurses v0.01
+LuaNcurses v0.02
 Jesse Luehrs (jluehrs2@uiuc.edu)
 
 OVERVIEW
@@ -15,7 +15,11 @@ None yet, but hopefully the included tests should be explanatory enough for now.
 
 CHANGES
 =======
-0.1
+0.02
+- Lots of cleanups
+- Builds properly on OS X (?)
+
+0.01
 - Initial basic implementation
 
 COPYRIGHT AND LICENSE

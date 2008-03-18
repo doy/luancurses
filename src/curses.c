@@ -552,7 +552,7 @@ extern int luaopen_curses(lua_State* L)
 
     luaL_register(L, "curses", reg);
     lua_getglobal(L, "curses");
-    lua_pushstring(L, "LuaNcurses 0.01");
+    lua_pushstring(L, "LuaNcurses 0.02");
     lua_setfield(L, -2, "_VERSION");
 
     return 1;
