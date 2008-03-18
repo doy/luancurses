@@ -337,15 +337,15 @@ static int l_init_color(lua_State* L)
         lua_getfield(L, 2, "r");
         lua_getfield(L, 2, "g");
         lua_getfield(L, 2, "b");
-        r = luaL_checkinteger(L, -3) * 1000 / 256;
-        g = luaL_checkinteger(L, -2) * 1000 / 256;
-        b = luaL_checkinteger(L, -1) * 1000 / 256;
+        r = luaL_checkint(L, -3) * 1000 / 256;
+        g = luaL_checkint(L, -2) * 1000 / 256;
+        b = luaL_checkint(L, -1) * 1000 / 256;
         lua_pop(L, 3);
     }
     else {
-        r = luaL_checkinteger(L, 2) * 1000 / 256;
-        g = luaL_checkinteger(L, 3) * 1000 / 256;
-        b = luaL_checkinteger(L, 4) * 1000 / 256;
+        r = luaL_checkint(L, 2) * 1000 / 256;
+        g = luaL_checkint(L, 3) * 1000 / 256;
+        b = luaL_checkint(L, 4) * 1000 / 256;
     }
 
     lua_pushboolean(L, init_color(color_val, r, g, b) == OK);
@@ -455,8 +455,8 @@ static int l_move(lua_State* L)
     else {
         int x, y;
 
-        y = luaL_checkinteger(L, 1);
-        x = luaL_checkinteger(L, 2);
+        y = luaL_checkint(L, 1);
+        x = luaL_checkint(L, 2);
 
         lua_pushboolean(L, (move(y, x) == OK));
     }
@@ -625,7 +625,7 @@ static int l_insdelln(lua_State* L)
 {
     int n;
 
-    n = luaL_checkinteger(L, 1);
+    n = luaL_checkint(L, 1);
 
     lua_pushboolean(L, (insdelln(n) == OK));
     return 1;
