@@ -63,12 +63,12 @@ static void init_colors(lua_State* L)
 {
     int i;
 
-    for (i = 0; i < sizeof(colors) / sizeof(colors[0]); ++i) {
+    ncolors = sizeof(colors) / sizeof(colors[0]);
+
+    for (i = 0; i < ncolors; ++i) {
         lua_pushinteger(L, colors[i].tag);
         lua_setfield(L, -2, colors[i].str);
     }
-
-    ncolors = 8;
 }
 
 static int get_pos(lua_State* L, pos* p)
