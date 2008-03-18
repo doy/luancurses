@@ -39,6 +39,7 @@ local function init_curses()
     signal.signal("INT", cleanup)
     signal.signal("TERM", cleanup)
     curses.start_color()
+    curses.use_default_colors()
     curses.setup_term{nl = false, cbreak = true, echo = false, keypad = true}
     for _, color in ipairs({"red", "blue", "green"}) do
         curses.init_pair(color, color)
