@@ -273,6 +273,9 @@ static int l_getch(lua_State* L)
         s = c;
         lua_pushlstring(L, &s, 1);
     }
+    else {
+        lua_pushstring(L, key_name);
+    }
 
     return 1;
 }
