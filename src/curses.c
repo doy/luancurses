@@ -2,7 +2,6 @@
 #include <curses.h>
 #include <lua.h>
 #include <lauxlib.h>
-#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -426,8 +425,7 @@ static int l_getch(lua_State* L)
     }
     if (c == ERR) {
         lua_pushboolean(L, 0);
-        lua_pushstring(L, strerror(errno));
-        return 2;
+        return 1;
     }
 
     key_name = get_key_str(c);
