@@ -7,7 +7,7 @@ CC = gcc
 INCLUDES = -I$(LUA_INCLUDEPATH)
 DEFINES =
 LIBS = -lcurses -l$(LUA_LIBNAME)
-COMMONFLAGS = -Werror -Wall -pedantic -O0 -g -pipe $(OS_FLAGS)
+COMMONFLAGS = -Werror -Wall -pedantic -O2 -g -pipe $(OS_FLAGS)
 CFLAGS = -c $(INCLUDES) $(DEFINES) $(COMMONFLAGS)
 LDFLAGS = $(LIBS) $(COMMONFLAGS) -shared
 
