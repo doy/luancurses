@@ -4,9 +4,9 @@ include Make.$(OS)
 BIN = src/curses.so
 OBJ = src/curses.o src/strings.o
 CC = gcc
-INCLUDES =
+INCLUDES = -I$(LUA_INCLUDEPATH)
 DEFINES =
-LIBS = -lcurses -llua
+LIBS = -lcurses -l$(LUA_LIBNAME)
 COMMONFLAGS = -Werror -Wall -pedantic -O0 -g -pipe $(OS_FLAGS)
 CFLAGS = -c $(INCLUDES) $(DEFINES) $(COMMONFLAGS)
 LDFLAGS = $(LIBS) $(COMMONFLAGS) -shared
@@ -41,8 +41,8 @@ dep :
 	rm -f Makefile.bak
 
 install :
-	mkdir -p $(LUA_C_DIR)
-	cp $(BIN) $(LUA_C_DIR)
+	mkdir -p $(LUA_DIR)
+	cp $(BIN) $(LUA_DIR)
 
 dist : $(VERSION).tar.gz
 
