@@ -37,7 +37,7 @@ clean :
 	rm -f $(OBJ) $(BIN)
 
 dep :
-	makedepend $(INCLUDES) $(DEFINES) -Y $(SRC) > /dev/null 2>&1
+	makedepend $(DEFINES) -Y $(SRC) > /dev/null 2>&1
 	rm -f Makefile.bak
 
 install :
