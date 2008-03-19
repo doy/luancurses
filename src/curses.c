@@ -443,6 +443,18 @@ static int l_getch(lua_State* L)
     return 1;
 }
 
+static int l_ungetch(lua_State* L)
+{
+    const char* ch_str;
+    int ch;
+
+    ch_str = luaL_checklstring(L, 1, NULL);
+    ch = get_key_enum(ch_str);
+
+    lua_pushboolean(L, ungetch(ch) == OK);
+    return 1;
+}
+
 static int l_move(lua_State* L)
 {
     pos p;
@@ -674,6 +686,7 @@ const luaL_Reg reg[] = {
     { "init_color", l_init_color },
     { "init_pair", l_init_pair },
     { "getch", l_getch },
+    { "ungetch", l_ungetch },
     { "move", l_move },
     { "addch", l_addch },
     { "echochar", l_echochar },

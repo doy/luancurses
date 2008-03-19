@@ -1,7 +1,7 @@
 - chtype arrays (curs_addchstr, curs_inchstr)
   - the point of these routines is that they are more efficient, since you pass in an array of chtypes rather than an array of chars. how can i expose this functionality?
 - reading from the screen (curs_instr, curs_inch)
-- reading input (ungetch (curs_getch), curs_getstr
+- reading input (curs_getstr)
 - attribute support (curs_attr)
 - finish up curs_color (color_content, pair_content)
 - scrolling support (curs_scroll, setscrreg (curs_outopts))
