@@ -17,7 +17,7 @@ CHANGES
 =======
 0.02
 - Lots of cleanups
-- Builds properly on OS X (?)
+- Portability fixes - should build properly on OS X now, among other things
 
 0.01
 - Initial basic implementation
